@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>LinuxDev@Work</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <link href="favicon.ico" rel="icon" type="image/ico">
+</head>
+<body>
+<h2>Installing Git to Auto Deploy Code</h2>	
+<h2>Introduction</h2>
+<p>Git development began in April 2005, after many developers of the <a href="https://en.wikipedia.org/wiki/Linux_kernel" title="Linux kernel">Linux kernel</a> gave up access to <a href="https://en.wikipedia.org/wiki/BitKeeper" title="BitKeeper">BitKeeper</a>, a proprietary source-control management (SCM) system that they had been using to maintain the project since 2002. The copyright holder of BitKeeper, <a href="https://en.wikipedia.org/wiki/Larry_McVoy" title="Larry McVoy">Larry McVoy</a>, had withdrawn free use of the product after claiming that <a href="https://en.wikipedia.org/wiki/Andrew_Tridgell" title="Andrew Tridgell">Andrew Tridgell</a> had created <a href="https://en.wikipedia.org/wiki/SourcePuller" title="SourcePuller">SourcePuller</a> by reverse engineering the BitKeeper protocols. The same incident also spurred the creation of another version-control system, <a href="https://en.wikipedia.org/wiki/Mercurial" title="Mercurial">Mercurial</a>.</p>
+<p><a href="https://en.wikipedia.org/wiki/Linus_Torvalds" title="Linus Torvalds">Linus Torvalds</a> wanted a distributed system that he could use like BitKeeper, but none of the available free systems met his needs. Torvalds cited an example of a source-control management system needing 30 seconds to apply a patch and update all associated metadata, and noted that this would not scale to the needs of Linux kernel development, where synchronizing with fellow maintainers could require 250 such actions at once. For his design criterion, he specified that patching should take no more than three seconds, and added three more goals:</p>
+<ul><li>Take <a href="https://en.wikipedia.org/wiki/Concurrent_Versions_System" title="Concurrent Versions System">Concurrent Versions System</a> (CVS) as an example of what <i>not</i> to do; if in doubt, make the exact opposite decision.</li>
+<li>Include very strong safeguards against corruption, either accidental or malicious.</li>
+<li>Support a distributed, BitKeeper like workflow.</li></ul>
+<p>These criteria eliminated every version-control system in use at the time, so immediately after the 2.6.12-rc2 Linux kernel development release, Torvalds set out to write his own. <b>The development of Git began on April 3rd, 2005.</b> Torvalds announced the project on 6 April and became <a href="https://en.wikipedia.org/wiki/Self-hosting_(compilers)" title="Self-hosting (compilers)">self-hosting (compilers)</a> the next day. The first merge of multiple branches took place on 18 April. Torvalds achieved his performance goals; on 29 April, the nascent Git was benchmarked recording patches to the Linux kernel tree at the rate of 6.7 patches per second. On 16 June, Git managed the kernel 2.6.12 release.</p>
+<p>Torvalds turned over <a href="https://en.wikipedia.org/wiki/Software_maintenance" title="Software maintenance">maintenance</a> on 26 July 2005 to <a href="https://www.facesofopensource.com/junio-hamano/" title="Junio Hamano" >Junio Hamano</a>, a major contributor to the project. Hamano was responsible for the 1.0 release on 21 December 2005 and remains the project's core maintainer. <a href="https://en.wikipedia.org/wiki/Git#History" title="Git#History"> (Reference: Wikipedia)</a></p>
+<hr><h2>Install Git with Apt</h2>
+<p>By far the easiest way to install Git is by apt, though the version you might get may not be the latest it may be a faster alternative for the other sytle of installation if you want to set-up Git as quickly as possible.</p>
+<p>You will just have to update your package and install Git afterwards.</p>
+<pre><code>sudo apt-get update
+</code></pre>
+<pre><code>audo apt-get install git
+</code></pre>
+<hr><h2>Install Git from Source</h2>
+<p>Installing Git from source requires downloading the latest source code of Git then compiling to create an installer. Before you begin, you need to install the software that git depends on. This is all available in the default repositories, so we can update our local package index and then install the packages:</p>
+<pre><code>sudo apt-get update
+</code></pre>
+<pre><code>sudo apt-get install build-essential libssl-dev libcurl4-gnutls-dev libexpat1-dev gettext unzip
+</code></pre>
+<p>Afterwards you can download the latest Git version you want going to the git project's page on Github.</p>
+<p>Click on <strong>Branch: master</strong> then go to <strong>tags</strong> and click on the version you want to install.</p>
+<p><img alt="Git Download Page" data-src="https://lh3.googleusercontent.com/-FYdNhCLfTco/V5Us1HceJkI/AAAAAAAACMA/-l5FHp_T4LIk9GIDs6_ww3_TlzovQBCvwCCo/s912/Screenshot_105.png" class=" lazyload"></p>
+<p>On the next page click on <strong>Clone or download</strong> then right click on <strong>Download ZIP</strong> and select <strong>Copy Link Address</strong>.</p>
+<p><img alt="Git Download Page 2" data-src="https://lh3.googleusercontent.com/-zvUD4oLQwyY/V5Us1S_8qFI/AAAAAAAACMA/doNzCGqOwIkVuCsSrGRVNE0f7EWOuDExQCCo/s912/Screenshot_106.png" class=" lazyload"></p>
+<p>Lets go back to your Ubuntu Server. Download the file using wget.</p>
+<pre><code>wget https://github.com/git/git/archive/v2.9.2.zip
+</code></pre>
+<p>Unzip the downloaded file and move inside the directory.</p>
+<pre><code>unzip v2.9.2.zip
+</code></pre>
+<pre><code>cd git-2.9.2
+</code></pre>
+<p>Make the package and install by by the commands.</p>
+<pre><code>sudo make prefix=/usr/local all
+</code></pre>
+<pre><code>sudo make prefix=/usr/local install
+</code></pre>
+<p>Now that Git is installed we can now configure it for our use.</p>
+<hr><h2>Setting up Git</h2>
+<p>We will still need to make some changes so our commit messages will contain our information. We can do it through the command <strong>git config</strong>.</p>
+<p>We will need to provide a name and an email address, we can do this by running the commands below:</p>
+<pre><code>git config --global user.name "Your Name"
+</code></pre>
+<pre><code>git config --global user.email "youremail@domain.com"
+</code></pre>
+<p>We can see our configuration by typing.</p>
+<pre><code>git config --list
+</code></pre>
+<p>The corresponding result will be like:</p>
+<pre><code>user@gitrepo:~# git config --list
+user.name=Your Name
+user.email=youremail@domain.com
+</code></pre>
+<hr><h2>Setup Automatic Deployment with Git</h2>
+<h4>Our Server Setup</h4>
+<p>Our workspace:<br>
+Your server live directory: /var/www/html/mydomain.com<br>
+Your server repository: /var/repo/mysite.git<br>
+What should we do if we want to push to mysite.git and at the same time make all the content available at /var/www/html/mydomain.com?</p>
+<h4>Creating Repository</h4>
+<p>type the following from the command line:</p>
+<pre><code>cd /var
+</code></pre>
+<pre><code>mkdir repo &amp;&amp; cd repo
+</code></pre>
+<pre><code>mkdir site.git &amp;&amp; cd site.git
+</code></pre>
+<pre><code>git init --bare
+</code></pre>
+<p>---bare means no source files, just version control.</p>
+<h4>Hooks</h4>
+<p>Git documentation define three possible server hooks: 'pre-receive', 'post-receive' and 'update'. 'Pre-receive' is executed as soon as the server receives a 'push', 'update' is similar but it executes once for each branch, and 'post-receive' is executed when a 'push' is completely finished and it's the one we are interested in.</p>
+<p>In our Git repository we type:</p>
+<pre><code>ls
+</code></pre>
+<p>You can see a list of folders after executing the command.</p>
+<pre><code>user@gitrepo:/var/repo/mysite.git# ls
+branches  config  description  HEAD  hooks  info  objects  refs
+</code></pre>
+<p>We will go to folder <strong>hooks</strong>.</p>
+<pre><code>cd hooks
+</code></pre>
+<p>Now, create the file 'post-receive' by typing:</p>
+<pre><code>cat &gt; post-receive
+</code></pre>
+<p>When you execute this command, you will have a blank line indicating that everything you type will be saved to this file. So let's type:</p>
+<pre><code>#!/bin/sh
+git --work-tree=/var/www/html/mydomain.com --git-dir=/var/repo/mysite.git checkout -f  
+</code></pre>
+<p>When youa re finished typing press <em>Control + D</em> to save. To execute the file we set the proper permission and make it as an executable.</p>
+<pre><code>chmod +x post-receive
+</code></pre>
+<h4>Local Machine</h4>
+<p>Now we will create our local repository, type the command below to exit.</p>
+<pre><code>exit
+</code></pre>
+<p>and create your repository:</p>
+<pre><code>cd /my/myworkspace
+</code></pre>
+<pre><code>mkdir myproject &amp;&amp; cd myproject
+</code></pre>
+<pre><code>git init
+</code></pre>
+<p>To configure the remote path of our repository we type.</p>
+<pre><code>git remote add live ssh://user@mydomain.com/var/repo/mysite.git
+</code></pre>
+<p>To add a ready work to our Git repo we do.</p>
+<pre><code>git add.
+</code></pre>
+<pre><code>git commit -m "This project"
+</code></pre>
+<h4>Going Live From the Server</h4>
+<p>When its time to go live from beta you push it on the server.</p>
+<pre><code>cd /var/repo/beta.git
+</code></pre>
+<pre><code>git push live master
+</code></pre>
+<p>Thats it! Your server is now set to automatically deploy!</p>
+<hr>
+<h6>Ref: <a ref="https://github.com/git/git">https://github.com/git/git</a></h6>
+</body>
+</html>
